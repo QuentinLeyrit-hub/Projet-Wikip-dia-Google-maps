@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recherche de coordonnées Wikipédia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="wikiClient.js"></script>
+    <script src="googleMapClient.js"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzPp89h7fAeaAzpIilxyC4F4nRgmXBxNs&callback=Function.prototype"></script>
+    <script src="domHandler.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id=searchBox>
+            <input type="text" id="searchInput" title="" placeholder="Nom de la page Wikipédia" autocomplete="off"
+                required>
+        </div>
+        <div id="return">
+        </div>
+        <ul id="suggestions"></ul>
+        <div id="map"></div>
+        <div id="mainPage">
+
+        </div>
+        <div id=chrono>
+
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var titleList = new Set();
+            var map = initMap();
+            var markerList = new Set();
+
+
+            $("#searchInput").on('input', function (touch) {
+
+                createListSugg("searchInput", "suggestions");
+
+            })
+
+
+            $('#suggestions').on('click', 'li', function (enter) {
+
+                var textData;
+                var listFinal = new Set();
+                var search = $(this).text();
+
+                $('#searchInput').val($(this).text());
+                $('#suggestions').empty();
+
+                getWikiPageInDiv("mainPage", search)
+
+                getWikiParseText(search, function (data) {
+                    var listBaA = selectAllBaA(data);
+                    listBaA.forEach(function (BaA) {
+                        BaAtoInfo(BaA, listFinal);
+                    });
+
+                    getWikiPageInDiv("mainPage", search)
+
+                    callbackIfCoordinate(listBaA, function (lat, lon, title) {
+
+                        console.log('success callback')
+
+                        addValueToMarkerList(newMarker(parseFloat(lat), parseFloat(lon), title, map, function (title, mainPage) {
+
+                            scrollToTextInDiv("mainPage", title);
+
+                        }), markerList).then(() => {
+    const div = document.querySelector('#mainPage');
+
+    // Chercher tous les éléments "a" dans le div et changer leur couleur de police
+    const wikiLinks = div.querySelectorAll('a');
+    wikiLinks.forEach((wikilink) => {
+      for (let i = 0; i < listFinal.size; i++) {
+        if ($(wikilink).text() === listFinal[i].value.title) {
+          $(wikilink).addClass("text-green");
+        }
+      }
+    });
+  });
+
+
+                    })
+
+
+
+
+                    // for (let i = 0; i < listFinal.size; i++) {
+                    //     $("#mainPage a").each(function () {
+
+
+
+                    //         if ($(this).text() === listFinal[i].value.title) {
+
+                    //             $(this).addClass("text-green");
+                    //         }
+                    //     })
+                    // }
+                    console.log(lenListLink(listBaA))
+                });
+            })
+        });
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
