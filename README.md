@@ -10,3 +10,8 @@ Features mise en place :
  En cours de développement:
   -Optimisation de la sélection des liens sur un articles wikipédia.
   -Mise en place d'une feature frise chronologique qui permettrait d'afficher les points qui dépendent d'une période.
+
+
+Rendu: 
+
+<img width="960" alt="vue2" src="https://user-images.githubusercontent.com/69597181/231611228-3ec9d9c2-9afb-4bd5-ad23-bef18090b986.png">
